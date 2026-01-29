@@ -1,23 +1,45 @@
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function Update() {
-  const { id } = useParams();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [result, setResult] = useState(null);
+function Update({ user, onUpdate }) {
+  const [name, setName] = useState(user ? user.name : '');
+  const [email, setEmail] = useState(user ? user.email : '');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const updateUser = async () => {
+  useEffect(() => {
+    setName(user ? user.name : '');
+    setEmail(user ? user.email : '');
+  }, [user]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
-      const res = await axios.put(`https://itmp.sulla.hu/users/${id}`, { name, email });
-      setResult(res.data);
-    } catch (err) {
-      setResult(false);
+      await axios.put(`https://itmp.sulla.hu/users/${user.id}`, { name, email });
+      if (onUpdate) onUpdate();
+    } catch {
+      setError('Hiba történt a frissítéskor.');
     }
+    setLoading(false);
   };
 
-  return null;
-}
+  if (!user) return null;
 
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label className="form-label">Név</label>
+        <input type="text" className="form-control" value={name} onChange={e => setName(e.target.value)} required />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Email</label>
+        <input type="email" className="form-control" value={email} onChange={e => setEmail(e.target.value)} required />
+      </div>
+      <button type="submit" className="btn btn-primary" disabled={loading}>Mentés</button>
+      {error && <div className="alert alert-danger mt-2">{error}</div>}
+    </form>
+  );
+}
 export default Update;
