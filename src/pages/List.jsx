@@ -23,15 +23,15 @@ function List() {
     <div className="container mt-4">
       <h2>Felhasználók</h2>
       <button className="btn btn-success mb-3" onClick={() => openModal('new')}>Új felhasználó</button>
-      <div className="row g-3">
+      <div className="row g-3 justify-content-center">
         {users.map(user => (
-          <div className="col-12" key={user.id}>
-            <div className="card d-flex flex-row align-items-center justify-content-between p-3">
-              <div>
+          <div className="col-auto d-flex" key={user.id}>
+            <div className="card d-flex flex-column align-items-center p-3" style={{ minWidth: '220px', width: 'auto', maxWidth: '100%' }}>
+              <div className="text-center w-100">
                 <div className="fw-bold">{user.name}</div>
                 <div className="text-muted">{user.email}</div>
               </div>
-              <div className="d-flex gap-2">
+              <div className="d-flex gap-2 justify-content-center mt-3">
                 <button className="btn btn-outline-secondary" title="Részletek" onClick={() => openModal('details', user)}>
                   <i className="bi bi-eye"></i>
                 </button>
